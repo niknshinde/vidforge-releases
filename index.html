@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download VidForge</title>
+<meta name="description" content="Download VidForge, the AI-assisted desktop video editor for Windows.">
+<style>
+  :root { --bg: #0f1115; --fg: #eef0f4; --muted: #9aa3b2; --accent: #6c8cff; --card: #181b22; --border: #262a33; }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f6f7fa; --fg: #14161b; --muted: #596172; --accent: #3a5bdc; --card: #fff; --border: #dfe2e8; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px;
+         background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border);
+         border-radius: 16px; padding: 36px 28px; text-align: center; }
+  h1 { margin: 0 0 8px; font-size: 2rem; }
+  p { margin: 0 0 20px; color: var(--muted); }
+  .btn { display: inline-block; padding: 14px 28px; border-radius: 10px; background: var(--accent);
+         color: #fff; font-weight: 600; text-decoration: none; }
+  .btn:hover { filter: brightness(1.1); }
+  .meta { margin-top: 14px; font-size: .875rem; color: var(--muted); }
+  ol { text-align: left; color: var(--muted); font-size: .9rem; margin: 28px 0 0; padding-left: 20px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>VidForge</h1>
+  <p>AI-assisted desktop video editor for Windows.</p>
+  <a id="dl" class="btn" href="https://github.com/niknshinde/vidforge-releases/releases/latest">Download for Windows</a>
+  <div class="meta" id="meta">Windows 10 / 11, 64-bit</div>
+  <ol>
+    <li>Run the downloaded installer and pick an install folder. No administrator rights needed.</li>
+    <li>If Windows SmartScreen warns you, click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
+    <li>VidForge updates itself when a new version is available.</li>
+  </ol>
+  <p class="meta" style="margin-top:24px"><a href="https://github.com/niknshinde/vidforge-releases/releases">All versions</a></p>
+</main>
+<script>
+  // Point the button at the newest installer; the static link above is the fallback.
+  fetch("https://api.github.com/repos/niknshinde/vidforge-releases/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (rel) {
+      var exe = (rel.assets || []).find(function (a) { return /\.exe$/i.test(a.name); });
+      if (!exe) return;
+      document.getElementById("dl").href = exe.browser_download_url;
+      var mb = Math.round(exe.size / 1048576);
+      document.getElementById("meta").textContent =
+        "Version " + rel.tag_name.replace(/^v/, "") + " · " + mb + " MB · Windows 10 / 11, 64-bit";
+    })
+    .catch(function () {});
+</script>
+</body>
+</html>
