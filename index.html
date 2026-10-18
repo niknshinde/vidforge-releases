@@ -3,54 +3,307 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Download VidForge</title>
-<meta name="description" content="Download VidForge, the AI-assisted desktop video editor for Windows.">
+<title>VidForge – the video editor your AI can drive</title>
+<meta name="description" content="VidForge is a desktop video editor for Windows that Claude Code, Codex and other AI tools can drive. Search footage, caption, voice over and render.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #0f1115; --fg: #eef0f4; --muted: #9aa3b2; --accent: #6c8cff; --card: #181b22; --border: #262a33; }
+  :root {
+    --bg: #11100d; --panel: #1a1814; --line: #2f2b22; --fg: #efe9db; --muted: #a39b88;
+    --accent: #ff5b2e; --on-accent: #14110d;
+    --c1: #ff5b2e; --c2: #d9b45a; --c3: #8fae86; --c4: #e9e2d0;
+    --serif: "Instrument Serif", Georgia, serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  }
   @media (prefers-color-scheme: light) {
-    :root { --bg: #f6f7fa; --fg: #14161b; --muted: #596172; --accent: #3a5bdc; --card: #fff; --border: #dfe2e8; }
+    :root {
+      --bg: #f2ede1; --panel: #e9e2d2; --line: #cdc4ad; --fg: #1a1813; --muted: #685f4d;
+      --accent: #e8431a; --c1: #e8431a; --c2: #c99a2e; --c3: #6f8f66; --c4: #1a1813;
+    }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px;
-         background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border);
-         border-radius: 16px; padding: 36px 28px; text-align: center; }
-  h1 { margin: 0 0 8px; font-size: 2rem; }
-  p { margin: 0 0 20px; color: var(--muted); }
-  .btn { display: inline-block; padding: 14px 28px; border-radius: 10px; background: var(--accent);
-         color: #fff; font-weight: 600; text-decoration: none; }
-  .btn:hover { filter: brightness(1.1); }
-  .meta { margin-top: 14px; font-size: .875rem; color: var(--muted); }
-  ol { text-align: left; color: var(--muted); font-size: .9rem; margin: 28px 0 0; padding-left: 20px; }
-  a { color: var(--accent); }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 var(--sans); overflow-x: hidden; }
+  a { color: inherit; }
+  .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+  .mono { font-family: var(--mono); letter-spacing: .02em; }
+
+  /* header */
+  header { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
+  .brand { font: 1.7rem/1 var(--serif); text-decoration: none; display: flex; align-items: baseline; gap: 10px; }
+  .brand small { font: 400 .72rem var(--mono); color: var(--muted); border: 1px solid var(--line); padding: 2px 7px; border-radius: 99px; }
+  nav { display: flex; gap: 26px; font: 400 .85rem var(--mono); }
+  nav a { text-decoration: none; color: var(--muted); transition: color .2s; }
+  nav a:hover { color: var(--accent); }
+
+  /* hero */
+  .hero { padding: 56px 0 44px; }
+  .kicker { font: 500 .78rem var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .14em; margin: 0 0 22px; display: flex; align-items: center; gap: 10px; }
+  .rec { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); animation: blink 1.4s steps(1) infinite; }
+  h1 { font: 400 clamp(3.1rem, 9.4vw, 8rem)/.94 var(--serif); letter-spacing: -.02em; margin: 0 0 28px; max-width: 12ch; }
+  h1 em { color: var(--accent); }
+  .lede { max-width: 54ch; color: var(--muted); font-size: 1.15rem; margin: 0 0 34px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 12px; padding: 16px 26px;
+         background: var(--accent); color: var(--on-accent); font: 500 1rem var(--mono); text-decoration: none; border: 2px solid var(--accent); isolation: isolate; }
+  .btn::before { content: ""; position: absolute; inset: 0; background: var(--fg); transform: translateY(101%); transition: transform .35s cubic-bezier(.2,.8,.2,1); z-index: -1; }
+  .btn:hover::before { transform: none; }
+  .btn:hover { border-color: var(--fg); }
+  .btn svg { transition: transform .3s; }
+  .btn:hover svg { transform: translateY(3px); }
+  .link { font: 400 .9rem var(--mono); color: var(--muted); text-underline-offset: 5px; }
+  .link:hover { color: var(--fg); }
+
+  /* timeline */
+  .nle { margin-top: 56px; border: 1px solid var(--line); background: var(--panel); }
+  .nle-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); font: 400 .75rem var(--mono); color: var(--muted); }
+  .tc { color: var(--fg); font-size: .95rem; font-variant-numeric: tabular-nums; }
+  .ruler { position: relative; height: 22px; margin-left: 56px; border-bottom: 1px solid var(--line);
+           background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 5%); }
+  .tracks { position: relative; padding: 10px 0 12px; }
+  .track { display: flex; align-items: center; height: 46px; }
+  .track > b { flex: 0 0 56px; font: 500 .68rem var(--mono); color: var(--muted); padding-left: 14px; }
+  .lane { position: relative; flex: 1; height: 38px; margin-right: 14px; }
+  .clip { position: absolute; top: 0; height: 100%; padding: 8px 10px; font: 500 .72rem/1.2 var(--mono); color: #14110d; overflow: hidden; white-space: nowrap;
+          transform-origin: left center; transform: scaleX(0); opacity: 0; animation: clipin .7s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: var(--d, 0s); }
+  .clip:hover { filter: brightness(1.12); }
+  .wave { position: absolute; inset: 0; display: flex; align-items: center; gap: 2px; }
+  .wave i { flex: 1; background: var(--muted); opacity: .45; }
+  .wave.on { width: var(--p, 0%); overflow: hidden; }
+  .wave.on i { background: var(--accent); opacity: 1; }
+  .head { position: absolute; top: 0; bottom: 0; left: calc(56px + (100% - 70px) * var(--pp, 0)); width: 0; border-left: 2px solid var(--accent); pointer-events: none; }
+  .head::before { content: ""; position: absolute; top: -2px; left: -7px; border: 6px solid transparent; border-top: 8px solid var(--accent); }
+
+  .ticker { margin-top: 56px; border-block: 1px solid var(--line); overflow: hidden; white-space: nowrap; font: 500 .85rem var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+  .ticker div { display: inline-flex; padding: 14px 0; animation: scroll 38s linear infinite; }
+  .ticker span { padding: 0 22px; }
+  .ticker span::after { content: "/"; margin-left: 44px; color: var(--accent); }
+
+  /* sections */
+  section { padding: 96px 0 0; }
+  h2 { font: 400 clamp(2.2rem, 5.4vw, 4rem)/1 var(--serif); letter-spacing: -.015em; margin: 0 0 14px; max-width: 18ch; }
+  .sub { color: var(--muted); max-width: 56ch; margin: 0 0 44px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .cell { padding: 28px 24px 34px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); min-height: 230px; transition: background .25s, color .25s; }
+  .cell:hover { background: var(--accent); color: var(--on-accent); }
+  .cell:hover p, .cell:hover .n { color: var(--on-accent); }
+  .n { font: 500 .78rem var(--mono); color: var(--accent); }
+  .cell h3 { font: 400 1.9rem/1.05 var(--serif); margin: 38px 0 10px; }
+  .cell p { margin: 0; color: var(--muted); font-size: .98rem; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; counter-reset: s; }
+  .step { border-top: 2px solid var(--fg); padding-top: 18px; }
+  .step::before { counter-increment: s; content: "0" counter(s); font: 400 4.2rem/1 var(--serif); color: var(--accent); display: block; margin-bottom: 14px; }
+  .step h3 { font: 500 1.05rem var(--mono); margin: 0 0 8px; }
+  .step p { margin: 0; color: var(--muted); }
+
+  /* download */
+  #download { padding-top: 110px; }
+  .dl { background: var(--accent); color: var(--on-accent); padding: clamp(32px, 6vw, 72px); display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; }
+  .dl h2 { max-width: 11ch; margin-bottom: 18px; }
+  .dl p { margin: 0; max-width: 40ch; font-size: 1.05rem; }
+  .dl .btn { background: var(--on-accent); color: var(--fg); border-color: var(--on-accent); width: 100%; justify-content: space-between; padding: 22px 26px; font-size: 1.1rem; }
+  .dl .btn::before { background: var(--bg); }
+  .dl .btn:hover { border-color: var(--on-accent); }
+  .meta { margin-top: 14px; font: 400 .82rem var(--mono); }
+  .meta a { text-underline-offset: 4px; }
+  .help { margin-top: 26px; font: 400 .85rem/1.6 var(--mono); color: var(--muted); max-width: 70ch; }
+
+  footer { padding: 70px 0 44px; font: 400 .8rem var(--mono); color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { text-underline-offset: 4px; }
+
+  /* motion */
+  .rv { opacity: 0; transform: translateY(26px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); transition-delay: var(--rd, 0s); }
+  .rv.in { opacity: 1; transform: none; }
+  .hero > * { animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+  .hero > :nth-child(2) { animation-delay: .08s; } .hero > :nth-child(3) { animation-delay: .16s; } .hero > :nth-child(4) { animation-delay: .24s; } .hero > :nth-child(5) { animation-delay: .34s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
+  @keyframes clipin { to { transform: none; opacity: 1; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .clip, .rv { opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .steps { gap: 22px; }
+    .step::before { font-size: 3.2rem; }
+    .dl { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    nav a:first-child { display: none; }
+    .grid, .steps { grid-template-columns: 1fr; }
+    .cell { min-height: 0; }
+    .track > b { flex-basis: 34px; padding-left: 8px; }
+    .ruler { margin-left: 34px; }
+    .head { left: calc(34px + (100% - 48px) * var(--pp, 0)); }
+    .clip { font-size: .62rem; padding: 6px; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <h1>VidForge</h1>
-  <p>AI-assisted desktop video editor for Windows.</p>
-  <a id="dl" class="btn" href="https://github.com/niknshinde/vidforge-releases/releases/latest">Download for Windows</a>
-  <div class="meta" id="meta">Windows 10 / 11, 64-bit</div>
-  <ol>
-    <li>Run the downloaded installer and pick an install folder. No administrator rights needed.</li>
-    <li>If Windows SmartScreen warns you, click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
-    <li>VidForge updates itself when a new version is available.</li>
-  </ol>
-  <p class="meta" style="margin-top:24px"><a href="https://github.com/niknshinde/vidforge-releases/releases">All versions</a></p>
-</main>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#">VidForge <small id="ver">Windows</small></a>
+    <nav><a href="#features">Features</a><a href="#download">Download</a></nav>
+  </header>
+
+  <div class="hero">
+    <p class="kicker"><span class="rec"></span>Desktop video editor</p>
+    <h1>The editor your AI can <em>drive</em>.</h1>
+    <p class="lede">VidForge is a Windows video editor with a real timeline and a built-in tool server. Point Claude Code, Codex or any MCP client at it and say what you want cut.</p>
+    <div class="cta">
+      <a class="btn dl-link" href="https://github.com/niknshinde/vidforge-releases/releases/latest">Download for Windows
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+      </a>
+      <a class="link" href="#features">What it does</a>
+    </div>
+
+    <div class="nle rv" aria-hidden="true">
+      <div class="nle-bar"><span>SEQUENCE 01 &middot; 1080p &middot; 30 fps</span><span class="tc" id="tc">00:00:00:00</span></div>
+      <div class="ruler"></div>
+      <div class="tracks" id="tracks">
+        <div class="track"><b>V2</b><div class="lane">
+          <div class="clip" style="left:6%;width:20%;background:var(--c2);--d:.5s">Title card</div>
+          <div class="clip" style="left:64%;width:24%;background:var(--c2);--d:.9s">Lower third</div>
+        </div></div>
+        <div class="track"><b>V1</b><div class="lane">
+          <div class="clip" style="left:0;width:31%;background:var(--c1);--d:.7s">interview_a.mp4</div>
+          <div class="clip" style="left:32%;width:22%;background:var(--c4);--d:1s">b-roll_street.mp4</div>
+          <div class="clip" style="left:55%;width:27%;background:var(--c3);--d:1.3s">interview_b.mp4</div>
+          <div class="clip" style="left:83%;width:17%;background:var(--c4);--d:1.5s">outro.mp4</div>
+        </div></div>
+        <div class="track"><b>A1</b><div class="lane" id="aud">
+          <div class="wave base" id="w1"></div>
+          <div class="wave on" id="w2"></div>
+        </div></div>
+        <div class="track"><b>CC</b><div class="lane">
+          <div class="clip" style="left:2%;width:14%;background:var(--c4);--d:1.6s">caption</div>
+          <div class="clip" style="left:18%;width:16%;background:var(--c4);--d:1.7s">caption</div>
+          <div class="clip" style="left:36%;width:12%;background:var(--c4);--d:1.8s">caption</div>
+          <div class="clip" style="left:50%;width:18%;background:var(--c4);--d:1.9s">caption</div>
+          <div class="clip" style="left:70%;width:14%;background:var(--c4);--d:2s">caption</div>
+        </div></div>
+        <div class="head" id="head"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true"><div id="tick"></div></div>
+
+<div class="wrap">
+  <section id="features">
+    <h2 class="rv">Everything on one timeline.</h2>
+    <p class="sub rv">Edit by hand, by prompt, or both at once. The AI works on the same project you see on screen.</p>
+    <div class="grid">
+      <div class="cell rv"><span class="n">01</span><h3>Search your footage</h3><p>Find the shot by describing it. Media is analysed on your machine so clips are searchable by what is in them.</p></div>
+      <div class="cell rv" style="--rd:.06s"><span class="n">02</span><h3>Drive it from your AI</h3><p>A built-in MCP server lets Claude Code, Codex and other clients cut, arrange, caption and render for you.</p></div>
+      <div class="cell rv" style="--rd:.12s"><span class="n">03</span><h3>Captions</h3><p>Generate captions from the audio and place them on their own track, ready to restyle.</p></div>
+      <div class="cell rv"><span class="n">04</span><h3>Voiceover</h3><p>Write a line, get a voice. Use a stock voice or clone your own through a cloud provider.</p></div>
+      <div class="cell rv" style="--rd:.06s"><span class="n">05</span><h3>Motion graphics</h3><p>Titles, lower thirds and animated layers with transitions between clips.</p></div>
+      <div class="cell rv" style="--rd:.12s"><span class="n">06</span><h3>Updates itself</h3><p>New versions arrive in the app. No hunting for installers after the first download.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="rv">From idea to export.</h2>
+    <p class="sub rv">Three steps, and the first one is a download.</p>
+    <div class="steps">
+      <div class="step rv"><h3>Install</h3><p>Run the installer. It sets up for your user account and needs no admin rights.</p></div>
+      <div class="step rv" style="--rd:.08s"><h3>Connect</h3><p>Add your media, then connect your AI client from the settings screen.</p></div>
+      <div class="step rv" style="--rd:.16s"><h3>Direct</h3><p>Describe the cut. Watch the timeline change. Fix what you like by hand, then render.</p></div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="dl rv">
+      <div>
+        <h2>Get VidForge.</h2>
+        <p>Windows 10 or 11, 64-bit. Needs about 2 GB of disk space once installed.</p>
+      </div>
+      <div>
+        <a class="btn dl-link" href="https://github.com/niknshinde/vidforge-releases/releases/latest">Download installer
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+        </a>
+        <div class="meta" id="meta">Latest release on GitHub</div>
+        <div class="meta"><a href="https://github.com/niknshinde/vidforge-releases/releases">Older versions</a></div>
+      </div>
+    </div>
+    <p class="help">If Windows SmartScreen shows a warning, choose <b>More info</b> and then <b>Run anyway</b>. Once installed, VidForge checks for updates on its own.</p>
+  </section>
+
+  <footer><span>VidForge</span><a href="https://github.com/niknshinde/vidforge-releases">github.com/niknshinde/vidforge-releases</a></footer>
+</div>
+
 <script>
-  // Point the button at the newest installer; the static link above is the fallback.
+(function () {
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Waveform: same deterministic bars twice, the second layer (accent) is revealed up to the playhead.
+  function bars(el) {
+    var n = 150, html = "";
+    for (var i = 0; i < n; i++) {
+      var h = 14 + Math.abs(Math.sin(i * .37) * 40 + Math.sin(i * 1.3) * 26 + Math.sin(i * .09) * 18);
+      html += '<i style="height:' + Math.min(h, 96).toFixed(0) + '%"></i>';
+    }
+    el.innerHTML = html;
+  }
+  var w1 = document.getElementById("w1"), w2 = document.getElementById("w2");
+  bars(w1);
+  w2.innerHTML = '<div style="position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;gap:2px;width:' + w1.offsetWidth + 'px"></div>';
+  var inner = w2.firstChild; bars(inner);
+  function fixInner() { inner.style.width = w1.offsetWidth + "px"; }
+  addEventListener("resize", fixInner); fixInner();
+
+  // Playhead + timecode loop
+  var tracks = document.getElementById("tracks"), tc = document.getElementById("tc");
+  var DUR = 16000;
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function frame(t) {
+    var p = reduce ? .38 : ((t % DUR) / DUR);
+    tracks.style.setProperty("--pp", p);
+    w2.style.setProperty("--p", (p * 100) + "%");
+    var total = p * 40; // 40 second sequence
+    var s = Math.floor(total), f = Math.floor((total - s) * 30);
+    tc.textContent = "00:00:" + pad(s) + ":" + pad(f);
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Ticker
+  var words = ["Search footage", "Captions", "Voiceover", "Voice cloning", "Transitions", "Motion graphics", "MCP server", "Render", "Auto-update"];
+  var html = "";
+  for (var r = 0; r < 4; r++) words.forEach(function (w) { html += "<span>" + w + "</span>"; });
+  document.getElementById("tick").innerHTML = html;
+
+  // Scroll reveal
+  var rv = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: .15 });
+    rv.forEach(function (el) { io.observe(el); });
+  } else rv.forEach(function (el) { el.classList.add("in"); });
+
+  // Point the buttons at the newest installer
   fetch("https://api.github.com/repos/niknshinde/vidforge-releases/releases/latest")
     .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
     .then(function (rel) {
       var exe = (rel.assets || []).find(function (a) { return /\.exe$/i.test(a.name); });
       if (!exe) return;
-      document.getElementById("dl").href = exe.browser_download_url;
-      var mb = Math.round(exe.size / 1048576);
-      document.getElementById("meta").textContent =
-        "Version " + rel.tag_name.replace(/^v/, "") + " · " + mb + " MB · Windows 10 / 11, 64-bit";
+      document.querySelectorAll(".dl-link").forEach(function (a) { a.href = exe.browser_download_url; });
+      var v = rel.tag_name.replace(/^v/, "");
+      document.getElementById("ver").textContent = "v" + v;
+      document.getElementById("meta").textContent = "Version " + v + " · " + Math.round(exe.size / 1048576) + " MB · .exe installer";
     })
     .catch(function () {});
+})();
 </script>
 </body>
 </html>

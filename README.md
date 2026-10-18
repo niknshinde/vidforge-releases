@@ -21,4 +21,4 @@ Once installed, VidForge checks this repository for new versions and offers to u
 ## Requirements
 
 - Windows 10 or 11, 64-bit
-- About 1.5 GB of free disk space
+- About 2 GB of free disk space
