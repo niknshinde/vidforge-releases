@@ -33,7 +33,7 @@
   /* header */
   header { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
   .brand { font: 1.7rem/1 var(--serif); text-decoration: none; display: flex; align-items: baseline; gap: 10px; }
-  .brand small { font: 400 .72rem var(--mono); color: var(--muted); border: 1px solid var(--line); padding: 2px 7px; border-radius: 99px; }
+
   nav { display: flex; gap: 26px; font: 400 .85rem var(--mono); }
   nav a { text-decoration: none; color: var(--muted); transition: color .2s; }
   nav a:hover { color: var(--accent); }
@@ -136,7 +136,7 @@
     .dl { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) {
-    nav a:first-child { display: none; }
+
     .grid, .steps { grid-template-columns: 1fr; }
     .cell { min-height: 0; }
     .track > b { flex-basis: 34px; padding-left: 8px; }
@@ -149,8 +149,8 @@
 <body>
 <div class="wrap">
   <header>
-    <a class="brand" href="#">VidForge <small id="ver">Windows</small></a>
-    <nav><a href="#features">Features</a><a href="#download">Download</a></nav>
+    <a class="brand" href="#">VidForge</a>
+    <nav><a href="#features">Features</a></nav>
   </header>
 
   <div class="hero">
@@ -299,7 +299,6 @@
       if (!exe) return;
       document.querySelectorAll(".dl-link").forEach(function (a) { a.href = exe.browser_download_url; });
       var v = rel.tag_name.replace(/^v/, "");
-      document.getElementById("ver").textContent = "v" + v;
       document.getElementById("meta").textContent = "Version " + v + " · " + Math.round(exe.size / 1048576) + " MB · .exe installer";
     })
     .catch(function () {});
